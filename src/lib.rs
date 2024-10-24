@@ -732,6 +732,10 @@ impl STM32CubeProg {
         let mut debug_connect_parameters = std::ptr::null_mut();
         let stlink_count =
             unsafe { (self.vtable.get_stlink_list)(&mut debug_connect_parameters, 0) };
+        
+        if stlink_count == 0 {
+            return Err(err::CubeProgrammerError::NoDeviceFound.into());
+        }
 
         let params_slice =
             unsafe { std::slice::from_raw_parts(debug_connect_parameters, stlink_count as usize) };
